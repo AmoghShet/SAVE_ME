@@ -1,0 +1,913 @@
+#include <fstream.h>
+#include <conio.h>
+#include <string.h>
+#include <dos.h>
+#include <stdlib.h>
+#include<stdio.h>
+#include "H:\MOUSE.CPP"
+
+const char smile = 1;
+char s[10];
+unsigned int BattCount = 0;  //Battery Couter
+int Moved = 0; //Flag to see if he moved
+int NewGame = 0; //Flag to see if player is starting a new game
+
+class PlayerStats
+{
+	private:
+		float health;
+
+	public:
+		char name[30];
+		int soundlvl;
+		char location;
+		char orientation;
+		struct Inven
+		{
+			int MedKits;
+			unsigned int MeshCutter;
+			int KeyBunch;
+			struct Pho
+			{
+				int Battery;
+				unsigned int Signal;
+				unsigned int Ringer;
+				unsigned int Power;
+			}Phone;
+		}Inventory;
+
+		PlayerStats()
+		{
+			health = 100;
+			strcpy(name ,"Lil one");
+			soundlvl = 0;
+			location = 's';
+			Inventory.MedKits = 0;
+			Inventory.MeshCutter = 0;
+			Inventory.Phone.Signal = 0;
+			Inventory.Phone.Battery = 0;
+			Inventory.Phone.Ringer = 0;
+			Inventory.Phone.Power = 0;
+			Inventory.KeyBunch = 0;
+		}
+
+		float ReturnHealth()
+		{
+			return health;
+		}
+}Player;
+
+
+void save();
+void load();
+void loaddisplay();
+void readchangelog();
+void transition();
+void quit();
+void map();
+void menu();
+void menu2();
+void soundcheck();
+void phone();
+void phonetransition();
+void battery();
+void rules();
+void pt1();
+void nameinput();
+void pt2();
+void pt3();
+void pt3_2();
+void pt3_3();
+void frontdoor();
+void hallway1();
+void hallway2();
+void stairs();
+void hallway4();
+void hallway5();
+void hallway6();
+void kitchen();
+void hall();
+void closet();
+void storeroom();
+void vents();
+void vents2();
+void vents3();
+void vents4();
+void vents5();
+void comproom();
+void library1();
+void library2();
+void toilet();
+void bedroom();
+void balcony();
+void change();
+
+void save()
+{
+	fstream savefile;
+	if(!savefile)
+	{
+		cerr<<"ERROR: COULDN'T CREATE A SAVE FILE";
+	}
+	else
+	{
+		savefile.open ("H:\\SAVE.txt" , ios::out | ios::binary);
+		savefile.write( (char*)&Player , sizeof(Player) );
+	}
+	savefile.close();
+}
+
+void load()
+{
+	fstream loadfile;
+	if(!loadfile)
+	{
+		cerr<<"<<ERROR: \"SAVE.txt\" NOT FOUND";
+	}
+	else
+	{
+		loadfile.open("H:\\SAVE.txt" , ios::in | ios::binary);
+		loadfile.read( (char*)&Player , sizeof(Player) );
+	}
+	loadfile.close();
+	loaddisplay();
+}
+
+void loaddisplay()
+{
+	cleardevice();
+	cout<<"\n\n"
+	<<"\t\t\t\tPLAYER NAME: "
+	<<Player.name
+	<<"\n"
+	<<"\t\t\t\tPLAYER HEALTH: "
+	<<Player.ReturnHealth()
+	<<"\n"
+	<<"\t\t\t\tLOCATION: ";
+	switch (Player.location) //Location Output
+	{
+		case 's':
+		case 'S':
+			cout<<"STORE ROOM";
+			break;
+
+		case 'c':
+		case 'C':
+			cout<<"CLOSET";
+			break;
+
+		case 'h':
+		case 'H':
+			cout<<"HALL";
+			break;
+
+		case 'k':
+		case 'K':
+			cout<<"KITCHEN";
+			break;
+
+		case 'v':
+		case 'V':
+			cout<<"VENTS";
+			break;
+
+		case 'w':
+		case 'W':
+			cout<<"VENTS 2";
+			break;
+
+		case 'u':
+		case 'U':
+			cout<<"VENTS 3";
+			break;
+
+		case 'x':
+		case 'X':
+			cout<<"VENTS 4";
+			break;
+
+		case 'z':
+		case 'Z':
+			cout<<"VENTS 5";
+			break;
+
+		case 'r':
+		case 'R':
+			cout<<"COMPUTER ROOM";
+			break;
+
+		case 'b':
+		case 'B':
+			cout<<"LEFT LIBRARY";
+			break;
+
+		case 'y':
+		case 'Y':
+			cout<<"RIGHT LIBRARY";
+			break;
+
+		case 't':
+		case 'T':
+			cout<<"UPSTAIRS TOILET";
+			break;
+
+		case 'm':
+		case 'M':
+			cout<<"BEDROOM";
+			break;
+
+		case 'o':
+		case 'O':
+			cout<<"BALCONY";
+			break;
+
+		case '1':
+			cout<<"ENTRANCE";
+			break;
+
+		case '2':
+			cout<<"LOWER HALLWAY";
+			break;
+
+		case '3':
+			cout<<"STAIRS";
+			break;
+
+		case '4':
+			cout<<"UPPER HALLWAY";
+			break;
+
+		case '5':
+			cout<<"BEDROOM HALLWAY";
+			break;
+
+		case '6':
+			cout<<"WINDOW SILL";
+			break;
+	}
+	cout<<"\n\n"
+	<<"\t\t\t<<PRESS ANY KEY TO PROCEED>>";
+	map();
+	getch();
+	switch (Player.location) //Actual Load
+	{
+		case 's':
+		case 'S':
+			transition();
+			storeroom();
+			break;
+
+		case 'c':
+		case 'C':
+			transition();
+			closet();
+			break;
+
+		case 'h':
+		case 'H':
+			transition();
+			hall();
+			break;
+
+		case 'k':
+		case 'K':
+			transition();
+			kitchen();
+			break;
+
+		case 'v':
+		case 'V':
+			transition();
+			vents();
+			break;
+
+		case 'w':
+		case 'W':
+			transition();
+			vents2();
+			break;
+
+		case 'u':
+		case 'U':
+			transition();
+			vents3();
+			break;
+
+		case 'x':
+		case 'X':
+			transition();
+			vents4();
+			break;
+
+		case 'z':
+		case 'Z':
+			transition();
+			vents5();
+			break;
+
+		case 'r':
+		case 'R':
+			transition();
+			comproom();
+			break;
+
+		case 'b':
+		case 'B':
+			transition();
+			library1();
+			break;
+
+		case 'y':
+		case 'Y':
+			transition();
+			library2();
+			break;
+
+		case 't':
+		case 'T':
+			transition();
+			toilet();
+			break;
+
+		case 'm':
+		case 'M':
+			transition();
+			bedroom();
+			break;
+
+		case 'o':
+		case 'O':
+			transition();
+			balcony();
+			break;
+
+		case '1':
+			transition();
+			hallway1();
+			break;
+
+		case '2':
+			transition();
+			hallway2();
+			break;
+
+		case '3':
+			transition();
+			stairs();
+			break;
+
+		case '4':
+			transition();
+			hallway4();
+			break;
+
+		case '5':
+			transition();
+			hallway5();
+			break;
+
+		case '6':
+			transition();
+			hallway6();
+			break;
+	}
+}
+
+void readchangelog()
+{
+	char ch;
+	fstream logfile;
+	logfile.open ("H:\\CHANGE.txt" , ios::in | ios::binary);
+	if (!logfile)
+	{
+		cerr<<"<<ERROR: \"CHANGE.txt\" NOT FOUND";
+	}
+	else
+	{
+		logfile.get(ch);
+		while(!logfile.eof())
+		{
+			cout<<ch;
+			logfile.get(ch);
+		}
+	}
+	logfile.close();
+}
+
+void transition()
+{
+	cleardevice();
+	cout<<"\t\t\t\t"
+	<<"<<WAIT ONE MOMENT>>"
+	<<"\n\n\n\n\n";
+	delay(750);
+}
+
+void quit()
+{
+	cleardevice();
+	cout<<"\n\n"
+	<<"\t\t\t\tARE YOU SURE? (Y/N)"
+	<<"\n\n\n\n\n"
+	<<"\t\t\t\t\tYou: ";
+	cin>>s;
+	if ( ( strcmpi("Y",s) == 0 ) || ( strcmpi("y",s) == 0 ) )
+	{
+		menu2();
+	}
+	else
+	{
+		switch (Player.location) //Back to where he was
+		{
+			case 's':
+			case 'S':
+				storeroom();
+				break;
+
+			case 'c':
+			case 'C':
+				closet();
+				break;
+
+			case 'h':
+			case 'H':
+				hall();
+				break;
+
+			case 'k':
+			case 'K':
+				kitchen();
+				break;
+
+			case 'v':
+			case 'V':
+				vents();
+				break;
+
+			case 'w':
+			case 'W':
+				vents2();
+				break;
+
+			case 'u':
+			case 'U':
+				vents3();
+				break;
+
+			case 'x':
+			case 'X':
+				vents4();
+				break;
+
+			case 'z':
+			case 'Z':
+				vents5();
+				break;
+
+			case 'r':
+			case 'R':
+				comproom();
+				break;
+
+			case 'b':
+			case 'B':
+				library1();
+				break;
+
+			case 'y':
+			case 'Y':
+				library2();
+				break;
+
+			case 't':
+			case 'T':
+				toilet();
+				break;
+
+			case 'm':
+			case 'M':
+				bedroom();
+				break;
+
+			case 'o':
+			case 'O':
+				balcony();
+				break;
+
+			case '1':
+				hallway1();
+				break;
+
+			case '2':
+				hallway2();
+				break;
+
+			case '3':
+				stairs();
+				break;
+
+			case '4':
+				hallway4();
+				break;
+
+			case '5':
+				hallway5();
+				break;
+
+			case '6':
+				hallway6();
+				break;
+		}
+	}
+
+}
+
+void map()
+{
+	rectangle(40,300,600,375); //Outer Rectangle
+	line(140,300,140,375); //H1
+	line(240,300,240,375);
+	line(340,300,340,375);
+	line(440,300,440,375);
+	line(520,225,520,300);
+	rectangle(440,375,600,450);
+	rectangle(440,225,600,300);
+}
+
+void menu()
+{
+	initmouse();
+	int x,y,i;
+	int g=DETECT,d,button;
+	initgraph(&g, &d,"C:\\TC\\BGI");
+	cleardevice();
+	x=getmaxx()/2; //Set center for X axis
+	y=getmaxy()/2; //Set center for Y axis
+
+	int oc=0; //Value for outer circle
+	int ic=100; //Value for inner circle
+
+	for(int e=0 ; e<5 ; e++) //The circle going outward
+	{
+		for(int i=50 ; i<150 ; i++)
+		{
+			setcolor(7); //The text in white
+			settextstyle(SMALL_FONT, HORIZ_DIR, 10);
+			outtextxy(x,y,"Loading");
+			settextstyle(SMALL_FONT, HORIZ_DIR, 5);
+			outtextxy(x+5,y+5,"Please Wait");
+			setcolor(8); //The circle in grey
+			circle(x,y,oc);
+			circle(x,y,ic);
+			oc++;
+			ic--;
+			cleardevice();
+		}
+	}
+	for(e=0 ; e<5 ; e++) //The circle going inward
+	{
+		for(int i=50 ; i<150 ; i++)
+		{
+			setcolor(7);
+			settextstyle(SMALL_FONT, HORIZ_DIR, 10);
+			outtextxy(x,y,"Loading");
+			settextstyle(SMALL_FONT, HORIZ_DIR, 5);
+			outtextxy(x+5,y+5,"Please Wait");
+			setcolor(8);
+			circle(x,y,oc);
+			circle(x,y,ic);
+			oc--;
+			ic++;
+			cleardevice();
+		}
+	}
+	closegraph();
+	_setcursortype(_NOCURSOR);
+	delay(2000);
+	cout<<"\n\n";delay(50);
+	cout<<"A";delay(50);cout<<" ";delay(50);cout<<"g";delay(50);
+	cout<<"a";delay(50);cout<<"m";delay(50);cout<<"e";delay(50);
+	cout<<" ";delay(50);cout<<"b";delay(50);cout<<"y";delay(50);
+	cout<<" ";delay(50);cout<<"A";delay(50);cout<<"m";delay(50);
+	cout<<"o";delay(50);cout<<"g";delay(50);cout<<"h";delay(50);
+	cout<<" ";delay(50);cout<<"&";delay(50);cout<<" ";delay(50);
+	cout<<"D";delay(50);cout<<"w";delay(50);cout<<"i";delay(50);
+	cout<<"j";delay(50);cout<<"i";delay(50);cout<<"t";delay(50);
+	cout<<"h";delay(50);cout<<".";delay(2000);
+	_setcursortype(_NORMALCURSOR);
+	cout<<"\n\n";
+	delay(25);
+	_setcursortype(_NOCURSOR);
+	cout<<"T";delay(50);cout<<"h";delay(50);cout<<"i";delay(50);
+	cout<<"s";delay(50);cout<<" ";delay(50);cout<<"i";delay(50);
+	cout<<"s";delay(50);cout<<" ";delay(50);cout<<"a";delay(50);
+	cout<<" ";delay(50);cout<<"w";delay(50);cout<<"o";delay(50);
+	cout<<"r";delay(50);cout<<"k";delay(50);cout<<" ";delay(50);
+	cout<<"o";delay(50);cout<<"f";delay(50);cout<<" ";delay(50);
+	cout<<"f";delay(50);cout<<"i";delay(50);cout<<"c";delay(50);
+	cout<<"t";delay(50);cout<<"i";delay(50);cout<<"o";delay(50);
+	cout<<"n";delay(50);cout<<".";delay(50);cout<<" ";delay(250);
+	cout<<"A";delay(50);cout<<"n";delay(50);cout<<"y";delay(50);
+	cout<<" ";delay(50);cout<<"s";delay(50);cout<<"i";delay(50);
+	cout<<"m";delay(50);cout<<"i";delay(50);cout<<"l";delay(50);
+	cout<<"a";delay(50);cout<<"r";delay(50);cout<<"i";delay(50);
+	cout<<"t";delay(50);cout<<"i";delay(50);cout<<"e";delay(50);
+	cout<<"s";delay(50);cout<<" ";delay(50);cout<<"t";delay(50);
+	cout<<"o";delay(50);cout<<" ";delay(50);cout<<"a";delay(50);
+	cout<<"n";delay(50);cout<<"y";delay(50);cout<<" ";delay(50);
+	cout<<"r";delay(50);cout<<"e";delay(50);cout<<"a";delay(50);
+	cout<<"l";delay(50);cout<<" ";delay(50);cout<<"p";delay(50);
+	cout<<"e";delay(50);cout<<"r";delay(50);cout<<"s";delay(50);
+	cout<<"o";delay(50);cout<<"n";delay(50);cout<<",";delay(50);
+	cout<<" ";delay(50);cout<<"a";delay(50);cout<<"l";delay(50);
+	cout<<"i";delay(50);cout<<"v";delay(50);cout<<"e";delay(50);
+	cout<<" ";delay(50);cout<<"o";delay(50);cout<<"r";delay(50);
+	cout<<" ";delay(50);cout<<"d";delay(50);cout<<"e";delay(50);
+	cout<<"c";delay(50);cout<<"e";delay(50);cout<<"a";delay(50);
+	cout<<"s";delay(50);cout<<"e";delay(50);cout<<"d";delay(50);
+	cout<<",";delay(50);cout<<" ";delay(50);cout<<"i";delay(50);
+	cout<<"s";delay(50);cout<<" ";delay(50);cout<<"p";delay(50);
+	cout<<"u";delay(50);cout<<"r";delay(50);cout<<"e";delay(50);
+	cout<<"l";delay(50);cout<<"y";delay(50);cout<<" ";delay(50);
+	cout<<"c";delay(50);cout<<"o";delay(50);cout<<"i";delay(50);
+	cout<<"n";delay(50);cout<<"c";delay(50);cout<<"i";delay(50);
+	cout<<"d";delay(50);cout<<"e";delay(50);cout<<"n";delay(50);
+	cout<<"t";delay(50);cout<<"a";delay(50);cout<<"l";delay(50);
+	cout<<".";
+	delay(2500);
+	cout<<"  ";
+	_setcursortype(_NOCURSOR);
+	for (int ia=1;ia<=34;ia++)
+	{
+		delay(25);
+		cout<<"\b\b\b  ";
+	}
+	clrscr();
+	cout<<"\n\n"
+	<<"A game by Amogh & Dwijith."
+	<<"\n\n"
+	<<"This is a work of fiction. Any similarities to any real person, alive or decea ";
+	for (ia=1;ia<=80;ia++)
+	{
+		cout<<"\b\b\b  ";
+		delay(25);
+	}
+	clrscr();
+	cout<<"\n\nA game by Amogh & Dwijith  ";
+	for (ia=1;ia<=34;ia++)
+	{
+		delay(25);
+		cout<<"\b\b\b  ";
+	}
+	cout<<"\b\b";
+	_setcursortype(_NORMALCURSOR);
+	delay(1500);
+	clrscr();
+	menu2();
+}
+
+void menu2()
+{
+	int x,y;
+	x=getmaxx()/2; //Set center for X axis
+	y=getmaxy()/2; //Set center for Y axis
+	int g=DETECT,d,button;
+	initgraph(&g, &d,"C:\\TC\\BGI");
+    //	delay(3500);
+	settextstyle(SMALL_FONT, HORIZ_DIR, 10);
+	settextjustify(x,y);
+	setcolor(8); //Color changed to grey for the lines
+	outtextxy(x-70,y-78,"----");
+	outtextxy(x-70,y-80,"----");
+	outtextxy(x-70,y-42,"----");
+	outtextxy(x-70,y-40,"----");
+	setcolor(6); //Color changed to orange for the text
+	outtextxy(x-70,y-60,"SAVE");
+
+	setcolor(8); //Color again to grey for the second batch of lines
+	outtextxy(x-10,y-17,"  --");
+	outtextxy(x-10,y-15,"  --");
+	outtextxy(x-10,y-55,"  --");
+	outtextxy(x-10,y-53,"  --");
+	setcolor(6); //Color back to orange
+	outtextxy(x-10,y-35,"  ME");
+	settextstyle(SMALL_FONT, HORIZ_DIR, 5);
+	setcolor(8);
+	outtextxy(x-100,y+40,"A game by Amogh and Dwijith");
+	outtextxy(x-105,y+55,"Copyrighted. Made in 2018-'19");
+
+	setcolor(6);  //Allmenu items
+	outtextxy(x-260,y+130,"Help");
+	outtextxy(x-35,y+150,"Start Game");
+	outtextxy(x+230,y+170,"Exit");
+	outtextxy(x-260,y+170,"Load");
+	outtextxy(x+205,y+130,"Change Log");
+
+	setcolor(8);
+	outtextxy(x-225,y-220,"\"Your choices brought you here, lets hope they get you out!\"");
+	outtextxy(x-45,y-205,"Version 1.10");
+
+	setcolor(8);  //Box around menu
+	line(x-310,y+120,x+310,y+120); //Top Lengths
+	line(x-307,y+123,x+312,y+123);
+	line(x-310,y+120,x-310,y+200); //Left Heights
+	line(x-307,y+123,x-307,y+203);
+	line(x+310,y+120,x+310,y+200); //Right Heights
+	line(x+312,y+123,x+312,y+203);
+	line(x-310,y+200,x+310,y+200); //Bottom Lengths
+	line(x-307,y+203,x+312,y+203);
+
+	char ch;
+	int xm, ym ;
+	while( 1 )
+	{       showmouseptr();
+
+		getmousepos(&button,&xm,&ym);
+		if( kbhit() )
+		{
+		     ch = getch();
+		     if( ch == 27 )
+			exit(0);
+	     }
+		rectangle(519,367,608,388); //change log
+		rectangle(542,407,580,428); //exit
+		rectangle(50,367,95,388);  //help
+		rectangle(50,407,95,428);  //load
+		rectangle(273,388,367,407); //Start game
+		if(button & 1==1 )
+		{
+			if( xm>=542 && xm<=580 && ym>=407 && ym<=428 )
+			{
+				exit(0); //EXIT!!
+			}
+			if( xm>=50 && xm<=95 && ym>=367 && ym<=388 )
+			{
+				rules(); //Rulez!!
+			}
+			if( xm>=50 && xm<=95 && ym>=407 && ym<=428 )
+			{
+				load(); //load!@!!
+			}
+			if( xm>=519 && xm<=608 && ym>=367 && ym<=388 )
+			{
+				change(); //change looog!!
+			}
+			if( xm>=273 && xm<=367 && ym>=388 && ym<=407 )
+			{
+				NewGame = 1;
+				rules(); //start!!
+			}
+		}//button click
+	}
+	getch();
+	closegraph();
+ }
+
+void soundcheck()
+{
+	if(Player.soundlvl>=8)
+	{
+		cout<<"\n\n"
+		<<"Hey!"
+		<<"\n\n"
+		<<"*It appears that Terry has heard you*";
+	}
+}
+
+void phone()
+{
+	if ( Player.Inventory.Phone.Power == 1 )
+	{
+		cleardevice();
+		cout<<"\n\n"
+		<<"\t\t\t   *------------------------*"<<"\n"
+		<<"\t\t\t   |            o           |"<<"\n"
+		<<"\t\t\t   |  --------------------  |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |Phone Battery:";
+		if (Player.Inventory.Phone.Battery<10)
+		{
+			cout<<"0"
+			<<Player.Inventory.Phone.Battery;
+		}
+		else
+		{
+			cout<<Player.Inventory.Phone.Battery;
+		}
+		cout<<"%   | |"<<"\n"
+		<<"\t\t\t   | |Phone Signal :"<<Player.Inventory.Phone.Signal<<"     | |"<<"\n"
+		<<"\t\t\t   | |Ringer       :";
+		if (Player.Inventory.Phone.Ringer==0)
+		{
+			cout<<"OFF";
+		}
+		else
+		{
+			cout<<"ON ";
+		}
+		cout<<"   | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   |  --------------------  |"<<"\n"
+		<<"\t\t\t   |                        |"<<"\n"
+		<<"\t\t\t   |           ()           |"<<"\n"
+		<<"\t\t\t   |                        |"<<"\n"
+		<<"\t\t\t   *------------------------*";
+	}
+	else
+	{
+		cleardevice();
+		cout<<"\n\n"
+		<<"\t\t\t   *------------------------*"<<"\n"
+		<<"\t\t\t   |            o           |"<<"\n"
+		<<"\t\t\t   |  --------------------  |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |    ____________    | |"<<"\n"
+		<<"\t\t\t   | |   |            |   | |"<<"\n"
+		<<"\t\t\t   | |   |            ||  | |"<<"\n";
+		cout<<"\t\t\t   | |   |            ||  | |"<<"\n"
+		<<"\t\t\t   | |   |____________|   | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n";
+		cout<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   | |                    | |"<<"\n"
+		<<"\t\t\t   |  --------------------  |"<<"\n"
+		<<"\t\t\t   |                        |"<<"\n"
+		<<"\t\t\t   |           ()           |"<<"\n"
+		<<"\t\t\t   |                        |"<<"\n"
+		<<"\t\t\t   *------------------------*";
+	}
+	getch();
+	phonetransition();
+}
+
+void phonetransition()
+{
+	for(int i=0 ; i<=30 ; i++)
+	{
+		cout<<"\n";
+	}
+	delay(500);
+	cout<<"\n"
+	<<"<<PRESS ANY KEY TO GO BACK>>";
+	getch();
+	cleardevice();
+}
+
+void battery()
+{
+	if ( Player.Inventory.Phone.Power == 1 )
+	{
+		BattCount++;
+		if ( BattCount >= 4 )
+		{
+			Player.Inventory.Phone.Battery -= 2;
+		}
+
+		if ( Player.Inventory.Phone.Battery <= 0 )
+		{
+			Player.Inventory.Phone.Power = 0;
+		}
+	}
+
+}
+
+void rules()
+{
+	cleardevice();
+	cout<<"\n\n"
+	<<"RULES: \n"
+	<<"------"
+	<<"\n\n"
+	<<"1. This is a text based game created just as a side project. So dont expect any fancy graphics... or any graphics at all. "
+	<<smile
+	<<"\n\n"
+	<<"2. As this game runs in the CMD, more often than not, words begin to get broken up. The fact that different monitors and operating systems all having different resolutions for the CMD does not help my cause. So as of right now, all one can do is bear with the breaks. Sorry for the inconvineance."
+	<<"\n\n"
+	

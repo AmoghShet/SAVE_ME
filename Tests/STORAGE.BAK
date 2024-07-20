@@ -1,0 +1,121 @@
+#include <iostream.h>
+#include <conio.h>
+#include <stdio.h>
+#include <fstream.h>
+#include <process.h>
+//F for File as in file stream
+
+int Op;
+
+struct Question
+{
+	char Quest[100];
+	char Option1[50], Option2[50];
+	char RAns;
+	int Points;
+};
+
+Question KBCQuest;
+
+void AddData()
+{
+
+clrscr();
+	fstream File;
+	cout<<"\n\n"
+	<<"Enter Question: ";
+	gets(KBCQuest.Quest);   //Getting element from memory
+	cout<<"\n"
+	<<"Enter option 1: ";
+	gets(KBCQuest.Option1);
+	cout<<"\n"
+	<<"Enter option 2: ";
+	gets(KBCQuest.Option2);
+	cout<<"\n"
+	<<"Enter the right option: ";
+	cin>>KBCQuest.RAns;
+	cout<<"\n"
+	<<"Enter points rewarded: ";
+	cin>>KBCQuest.Points;
+
+	File.open("H:\\Storage\\Test.dat", ios::app | ios::binary); //Storing. Binary is faster
+	File.write((char*)&KBCQuest, sizeof(KBCQuest));
+	File.close();
+	//Think of this as opening and writing in books
+
+}
+
+void DisplayData()
+{
+	fstream File;
+
+	File.open("H:\\Storage\\Test.dat", ios::in | ios::binary); //Storing. Binary is faster
+	File.read((char*)&KBCQuest, sizeof(KBCQuest));
+
+	while ( !File.eof() )
+	{
+		clrscr();
+		cout<<"\n\n"
+		<<"Enter Question: "
+		<<KBCQuest.Quest
+		<<"\n"
+		<<"Enter option 1: "
+		<<KBCQuest.Option1
+		<<"\n"
+		<<"Enter option 2: "
+		<<KBCQuest.Option2
+		<<"\n"
+		<<"Enter the right option: "
+		<<KBCQuest.RAns
+		<<"\n"
+		<<"Enter points rewarded: "
+		<<KBCQuest.Points;
+		File.read((char*)&KBCQuest, sizeof(KBCQuest));
+
+	}
+
+	File.close();
+
+}
+
+void main()
+{
+	do
+	{
+		clrscr();
+		cout<<"\n\n"
+		<<"1. Add more"
+		<<"\n\n"
+		<<"2. View all"
+		<<"\n\n"
+		<<"3. Exit"
+		<<"\n\n"
+		<<"----------"
+		<<"\n\n"
+		<<"Whats your play plan? "
+		<<"\n\n"
+		<<"You: ";
+		cin>>Op;
+
+		switch(Op)
+		{
+			case 1:
+				AddData();
+				break;
+
+			case 2:
+				DisplayData();
+				break;
+
+			case 3:
+				break;
+
+			default:
+				cout<<"\n\n"
+				<<"BVC";
+		}
+
+	getch();
+	}
+	while(Op!=3);
+}

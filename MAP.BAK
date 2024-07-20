@@ -1,0 +1,151 @@
+/*ASSIGNMEN NO.: 2
+  TOPIC        : CONSTRUCTORS AND DESTRUCTORS
+  DESCRIPTION  : CREATING A LIBRARY DATABASE
+  D.O.S        : 04-07-19
+*/
+
+#include<iostream.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<stdio.h>
+#include<string.h>
+
+int z=7;       //Output counter
+
+class library
+{
+	int access_no;
+	char title[30];
+	char author[30];
+	char publisher[30];
+	char status;
+	int copies;
+
+  public:
+	int get_access_no(){return access_no;}
+	library()
+	{
+		access_no=0;
+		strcpy(title,"\0");
+		strcpy(author,"\0");
+		strcpy(publisher,"\0");
+		copies=0;
+		status='\0';
+		cout<<"Book constructed...\n\n";
+	}
+
+	void add();
+	void display();
+	void borrow(){if(status=='R'){ status='B'; cout<<"\nBook borrowed";}
+		      else cout<<"Sorry, book is not available right now";}
+	void ret(){if(status=='B'){ status='R'; cout<<"\nBook returned";}
+		      else cout<<"Sorry, book has not been borrowed";}
+
+	~library()
+	{
+		cout<<endl<<"Book destructed...\n";
+	}
+
+
+};
+
+void library::display()
+{
+	gotoxy(1,z);
+	cout<<access_no;
+	gotoxy(11,z);
+	cout<<title;
+	gotoxy(33,z);
+	cout<<author;
+	gotoxy(46,z);
+	cout<<publisher;
+	gotoxy(59,z);
+	cout<<copies;
+	gotoxy(69,z);
+	cout<<status;
+}
+
+
+
+int count=0;
+
+void library::add()
+{
+	access_no=++count;
+	cout<<"Enter title of book\n";
+	gets(title);
+	cout<<"Enter author name\n";
+	gets(author);
+	cout<<"Enter publisher\n";
+	gets(publisher);
+	cout<<"Enter no. of copies\n";
+	cin>>copies;
+	status='R';
+	cout<<"\nBook added";
+}
+
+
+
+
+void main()
+{
+	clrscr();
+	library books[20];
+	int n;
+	getch();
+	int op;
+	clrscr();
+	cout<<"\t\t\t\tALPHA LIBRARY\n\n";
+	cout<<"\n\nHow many books in library?";
+	cin>>n;
+	for(int i=0; i<n; i++)
+	{
+	clrscr();
+	books[i].add();
+	}
+	do{
+	  clrscr();
+	  cout<<"\n\n\t\t\t\tALPHA LIBRARY\n\n";
+	  cout<<"1. Add book\n"
+	      <<"2. Display books\n"
+	      <<"3. Borrow book\n"
+	      <<"4. Return book\n"
+	      <<"5. Exit\n\n";
+	  cin>>op;
+	  clrscr();
+
+	  cout<<"\n\n\t\t\t\tALPHA LIBRARY\n\n";
+
+	  switch(op)
+	  {
+	  case 1:{books[count].add(); getch(); break;   }
+
+	  case 2:
+		 {
+		 gotoxy(1,5);
+		 cout<<"Acc. no.";
+		 gotoxy(11,5);
+		 cout<<"Title";
+		 gotoxy(33,5);
+		 cout<<"Author";
+		 gotoxy(46,5);
+		 cout<<"Publisher";
+		 gotoxy(59,5);
+		 cout<<"Copies";
+		 gotoxy(69,5);
+		 cout<<"Status";
+		 for(int i=0; i<count; i++)
+		 {
+			books[i].display();
+			z+=2;
+		 }
+			z=7;
+		 getch();
+		 break;
+	  }
+
+
+	  case 3:
+		 {
+		 int a;
+		 cout<<"\nWhich book would you like to

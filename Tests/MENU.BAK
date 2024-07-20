@@ -1,0 +1,102 @@
+#include<graphics.h>
+#include<conio.h>
+#include<dos.h>
+#include<iostream.h>
+#include<stdlib.h>
+void main()
+{
+	int x,y,i;
+	int g=DETECT, d;
+	initgraph(&g, &d,"C:\\TC\\BGI");
+	cleardevice();
+	x=getmaxx()/2; //Set center for X axis
+	y=getmaxy()/2; //Set center for Y axis
+
+	int oc=0; //Value for outer circle
+	int ic=100; //Value for inner circle
+
+	for(int e=0;e<5;e++)     //The circle going outward
+	{
+		for(int i=50;i<150;i++)
+		{
+			setcolor(7); //The text in white
+			settextstyle(SMALL_FONT, HORIZ_DIR, 10);
+			outtextxy(x,y,"Loading");
+			settextstyle(SMALL_FONT, HORIZ_DIR, 5);
+			outtextxy(x+5,y+5,"Please Wait");
+			setcolor(8); //The circle in grey
+			circle(x,y,oc);
+			circle(x,y,ic);
+			oc++;
+			ic--;
+			cleardevice();
+		}
+	}
+	for(e=0;e<5;e++)     //The circle going inward
+	{
+		for(int i=50;i<150;i++)
+		{
+			setcolor(7);
+			settextstyle(SMALL_FONT, HORIZ_DIR, 10);
+			outtextxy(x,y,"Loading");
+			settextstyle(SMALL_FONT, HORIZ_DIR, 5);
+			outtextxy(x+5,y+5,"Please Wait");
+			setcolor(8);
+			circle(x,y,oc);
+			circle(x,y,ic);
+			oc--;
+			ic++;
+			cleardevice();
+		}
+	}
+
+	//Menu begins
+	delay(500);
+	settextstyle(SMALL_FONT, HORIZ_DIR, 10);
+	settextjustify(x,y);
+	setcolor(8); //Color changed to grey for the lines
+	outtextxy(x-70,y-78,"----");
+	outtextxy(x-70,y-80,"----");
+	outtextxy(x-70,y-42,"----");
+	outtextxy(x-70,y-40,"----");
+	setcolor(6); //Color changed to orange for the text
+	outtextxy(x-70,y-60,"SAVE");
+	delay(400);
+
+	setcolor(8); //Color again to grey for the second batch of lines
+	outtextxy(x-10,y-17,"  --");
+	outtextxy(x-10,y-15,"  --");
+	outtextxy(x-10,y-55,"  --");
+	outtextxy(x-10,y-53,"  --");
+	setcolor(6); //Color back to orange
+	outtextxy(x-10,y-35,"  ME");
+	delay(400);
+	settextstyle(SMALL_FONT, HORIZ_DIR, 5);
+	setcolor(8);
+	outtextxy(x-100,y+40,"A game by Amogh and Dwijith");
+	outtextxy(x-105,y+55,"Copyrighted. Made in 2018-'19");
+
+	setcolor(6);  //Allmenu items
+	outtextxy(x-260,y+130,"Help");
+	outtextxy(x-35,y+150,"Start Game");
+	outtextxy(x+230,y+130,"Exit");
+	outtextxy(x-260,y+170,"Load");
+	outtextxy(x+205,y+170,"Change Log");
+
+	setcolor(8);
+	outtextxy(x-225,y-220,"\"Your choices brought you here, lets hope they get you out!\"");
+	outtextxy(x-45,y-205,"Version 1.10");
+
+	setcolor(8);  //Box around menu
+	line(x-310,y+120,x+310,y+120); //Top Lengths
+	line(x-307,y+123,x+312,y+123);
+	line(x-310,y+120,x-310,y+200); //Left Heights
+	line(x-307,y+123,x-307,y+203);
+	line(x+310,y+120,x+310,y+200); //Right Heights
+	line(x+312,y+123,x+312,y+203);
+	line(x-310,y+200,x+310,y+200); //Bottom Lengths
+	line(x-307,y+203,x+312,y+203);
+	getch();
+	closegraph();
+
+ }
